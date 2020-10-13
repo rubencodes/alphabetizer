@@ -1,5 +1,4 @@
 # Alphabetizer
 
-A Pen created on CodePen.io. Original URL: [https://codepen.io/rubencodes/pen/BazoNWj](https://codepen.io/rubencodes/pen/BazoNWj).
-
+Emojify your text to make it really `:alphabet-p: :alphabet-o: :alphabet-p:`.
 
