@@ -6,6 +6,9 @@ body {
 	width: 100%;
 	min-height: 100%;
 	padding: 20px 20px;
+	background-color: white;
+	color: black;
+	font-family: 'Noto Sans TC', sans-serif;
 }
 
 .pageHeader,
@@ -18,11 +21,13 @@ body {
 .pageHeader {
 	.pageTitle {
 		margin-bottom: 4px;
+		user-select: none;
 	}
 
 	.pageSubtitle {
 		margin-top: 0.25em;
 		color: dimgray;
+		user-select: none;
 	}
 }
 
@@ -33,7 +38,7 @@ body {
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-image: url("https://assets.codepen.io/1177378/alphabetizer_small.png");
-	background-position: center;
+	background-position: left center;
 }
 
 .pageMain {
@@ -57,6 +62,7 @@ body {
 		margin-top: 0;
 		margin-bottom: 6px;
 		min-height: 30px;
+		user-select: none;
 	}
 }
 
@@ -92,6 +98,7 @@ body {
 .githubButtons {
 	width: 100%;
 	padding: 20px 0;
+	user-select: none;
 }
 
 .sr-only {
@@ -124,6 +131,12 @@ body {
 	body {
 		background-color: #222;
 		color: white;
+	}
+
+	.pageHeader {
+		.pageSubtitle {
+			color: #bbb;
+		}
 	}
 
 	.textInput {
