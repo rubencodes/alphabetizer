@@ -1,0 +1,135 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 100%;
+  min-height: 100%;
+  padding: 20px 20px;
+}
+
+.pageHeader,
+.pageMain {
+  padding: 0 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.pageHeader .pageTitle {
+  margin-bottom: 4px;
+}
+.pageHeader .pageSubtitle {
+  margin-top: 0.25em;
+  color: dimgray;
+}
+
+.pageMain {
+  display: -webkit-box;
+  display: flex;
+}
+
+.bodySection {
+  -webkit-box-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+          flex-direction: column;
+}
+.bodySection:not(:first-child) {
+  margin-left: 20px;
+}
+.bodySection .bodySectionTitle {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+          justify-content: flex-start;
+  margin-top: 0;
+  margin-bottom: 6px;
+  min-height: 30px;
+}
+
+.textInput,
+.textOutput {
+  width: 100%;
+  min-height: 100px;
+  resize: none;
+  padding: 12px;
+  border-radius: 3px;
+}
+
+.textOutput {
+  background-color: #eee;
+  border-color: #ddd;
+  outline: none;
+}
+
+.copyButton {
+  all: unset;
+  color: purple;
+  font-size: inherit;
+  font-weight: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.copyButton:hover {
+  -webkit-filter: brightness(85%);
+          filter: brightness(85%);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Small screen */
+@media (max-width: 600px) {
+  .pageMain {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+            flex-direction: column;
+  }
+
+  .bodySection:not(:first-child) {
+    margin-top: 20px;
+    margin-left: 0;
+  }
+}
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #222;
+    color: white;
+  }
+
+  .textInput {
+    background-color: #444;
+    color: white;
+  }
+
+  .textOutput {
+    background-color: #333;
+    border-color: #111;
+    color: white;
+  }
+
+  .copyButton {
+    color: lightblue;
+  }
+}
+.pageTitle {
+  width: 400px;
+  height: 40px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url("https://assets.codepen.io/1177378/alphabetizer_small.png");
+}
