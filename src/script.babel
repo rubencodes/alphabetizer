@@ -1,37 +1,81 @@
-function alphabetize(input) {
-	const wordMap = {
-		"lol": ":lol:"
-	};
-	const numberMap = {
-		1: ":one:",
-		2: ":two:",
-		3: ":three:",
-		4: ":four:",
-		5: ":five:",
-		6: ":six:",
-		7: ":seven:",
-		8: ":eight:",
-		9: ":nine:",
-		0: ":zero:",
-	};
-	const specialCharsMap = {
-		"#": ":alphabet-hash:",
-		"?": ":alphabet-question:",
-		"!": ":alphabet-exclamation:",
-		"@": ":alphabet-at:",
-	};
+const lowerCaseLetters = [...Array(26)].map((val, i) => String.fromCharCode(i + 65).toLowerCase());
 
+const blankSpace = ":blank:";
+
+const wordMap = {
+	"lol": ":lol:"
+};
+
+const numberMap = {
+	1: ":one:",
+	2: ":two:",
+	3: ":three:",
+	4: ":four:",
+	5: ":five:",
+	6: ":six:",
+	7: ":seven:",
+	8: ":eight:",
+	9: ":nine:",
+	0: ":zero:",
+};
+
+const specialCharsMap = {
+	"#": ":alphabet-hash:",
+	"?": ":alphabet-question:",
+	"!": ":alphabet-exclamation:",
+	"@": ":alphabet-at:",
+};
+
+const allSupportedEmoji = [
+	blankSpace,
+	...Object.values(wordMap),
+	...Object.values(numberMap),
+	...Object.values(specialCharsMap),
+	...lowerCaseLetters.map((letter) => `:alphabet-${letter}:`)
+];
+
+function alphabetize(input) {
 	return input
 		.replace(/\w+/g, (match) => {
 			if (wordMap[match.toLowerCase()]) {
 				return wordMap[match.toLowerCase()]; // Replaces words.
 			}
-		
+
 			return match.replace(/([A-z])+?/g, ":alphabet-$1:"); // Replaces letters.
 		})
-		.replace(/(\s)+?/g, ":blank:") // Replace spaces.
+		.replace(/(\s)+?/g, blankSpace) // Replace spaces.
 		.replace(/([0-9])+?/g, (match) => numberMap[match]) // Replaces numbers.
 		.replace(/([?!#@])+?/g, (match) => specialCharsMap[match]); // Replaces numbers.
+}
+
+function alphabetizePreview(alphabetized) {
+	const emojiNames = alphabetized.split(":").filter(Boolean);
+	const maybeFileNames = emojiNames.map((emojiName) => {
+		if (!allSupportedEmoji.includes(`:${emojiName}:`)) {
+			return emojiName;
+		}
+
+		return `https://assets.codepen.io/1177378/${emojiName}.png`;
+	});
+	const nodes = maybeFileNames.map((maybeFileName) => {
+		const isFileName = maybeFileName.startsWith("https://");
+		if (!isFileName) {
+			const span = document.createElement("span");
+			span.innerText = maybeFileName;
+			return span;
+		}
+
+		const image = document.createElement("img");
+		image.src = maybeFileName;
+
+		return image;
+	});
+
+	const previewWrapper = document.createElement("div");
+	previewWrapper.className = "previewWrapper";
+	nodes.forEach((node) => previewWrapper.appendChild(node));
+
+	return previewWrapper;
 }
 
 function copy(element) {
@@ -41,12 +85,17 @@ function copy(element) {
 
 const input = document.getElementById("input");
 const output = document.getElementById("output");
+const preview = document.getElementById("preview");
 const copyButton = document.getElementById("copy");
 
 // Handle text transform.
 input.addEventListener("keyup", () => {
 	const alphabetized = alphabetize(input.value);
 	output.value = alphabetized;
+
+	const alphabetizedPreview = alphabetizePreview(alphabetized);
+	preview.innerHTML = "";
+	preview.appendChild(alphabetizedPreview);
 });
 
 // Handle text copying.

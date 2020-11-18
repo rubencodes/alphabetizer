@@ -42,18 +42,15 @@ body {
 }
 
 .pageMain {
-	display: flex;
-	flex-wrap: wrap;
+	display: grid;
+	grid-template: 135px 135px / 1fr 1fr;
+	grid-gap: 20px;
 }
 
 .bodySection {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-
-	&:not(:first-child) {
-		margin-left: 20px;
-	}
 
 	.bodySectionTitle {
 		display: flex;
@@ -96,9 +93,16 @@ body {
 }
 
 .githubButtons {
-	width: 100%;
-	padding: 20px 0;
 	user-select: none;
+}
+
+.previewWrapper {
+	display: flex;
+	flex-wrap: wrap;
+
+	img {
+		height: 30px;
+	}
 }
 
 .sr-only {
@@ -115,6 +119,7 @@ body {
 /* Small screen */
 @media (max-width: 600px) {
 	.pageMain {
+		display: flex;
 		flex-direction: column;
 	}
 
