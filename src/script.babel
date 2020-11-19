@@ -1,6 +1,6 @@
 const input = document.getElementById("input");
 const output = document.getElementById("output");
-const preview = document.getElementById("preview");
+const previewWrapper = document.getElementById("previewWrapper");
 const previewSection = document.getElementById("previewSection");
 const advancedOptions = document.getElementById("advancedOptionsSection");
 const copyButton = document.getElementById("copy");
@@ -101,11 +101,10 @@ function alphabetizePreview(alphabetized) {
 		return image;
 	});
 
-	const previewWrapper = document.createElement("div");
-	previewWrapper.className = "previewWrapper";
-	flatten(nodes).forEach((node) => previewWrapper.appendChild(node));
+	const preview = document.createElement("div");
+	flatten(nodes).forEach((node) => preview.appendChild(node));
 
-	return previewWrapper;
+	return preview;
 }
 
 function copy(element) {
@@ -127,10 +126,10 @@ function textTransform() {
 
 	if (prefixValue() === DEFAULT_PREFIX_VALUE) {
 		const alphabetizedPreview = alphabetizePreview(alphabetized);
-		preview.innerHTML = "";
-		preview.appendChild(alphabetizedPreview);
+		previewWrapper.innerHTML = "";
+		previewWrapper.appendChild(alphabetizedPreview);
 	} else {
-		preview.innerHTML = "[Preview Unavailable]";
+		previewWrapper.innerHTML = "[Preview Unavailable]";
 	}
 }
 
