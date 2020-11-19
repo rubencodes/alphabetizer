@@ -43,7 +43,7 @@ function alphabetize(input) {
 
 			return match.replace(/([A-z])+?/g, ":alphabet-$1:"); // Replaces letters.
 		})
-		.replace(/(\s)+?/g, blankSpace) // Replace spaces.
+		.replace(/([^\S\r\n])+?/g, blankSpace) // Replace spaces.
 		.replace(/([0-9])+?/g, (match) => numberMap[match]) // Replaces numbers.
 		.replace(/([?!#@])+?/g, (match) => specialCharsMap[match]); // Replaces numbers.
 }
@@ -62,6 +62,12 @@ function alphabetizePreview(alphabetized) {
 	const nodes = maybeFileNames.map((maybeFileName) => {
 		const isFileName = maybeFileName.startsWith("https://");
 		if (!isFileName) {
+			const isLineBreak = maybeFileName.match(/[\r\n]/) !== null;
+			if (isLineBreak) {
+				const br = document.createElement("br");
+				return br;
+			}
+
 			const span = document.createElement("span");
 			span.innerText = maybeFileName;
 			return span;
@@ -81,8 +87,8 @@ function alphabetizePreview(alphabetized) {
 }
 
 function copy(element) {
-  element.select();
-  document.execCommand("copy");
+	element.select();
+	document.execCommand("copy");
 }
 
 const input = document.getElementById("input");

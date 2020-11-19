@@ -104,6 +104,11 @@ body {
 	img {
 		height: 30px;
 	}
+
+	br {
+		width: 100%;
+		content: '';
+	}
 }
 
 .sr-only {
