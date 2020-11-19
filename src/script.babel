@@ -1,4 +1,17 @@
-const lowerCaseLetters = [...Array(26)].map((val, i) => String.fromCharCode(i + 65).toLowerCase());
+const input = document.getElementById("input");
+const output = document.getElementById("output");
+const preview = document.getElementById("preview");
+const previewSection = document.getElementById("previewSection");
+const advancedOptions = document.getElementById("advancedOptionsSection");
+const copyButton = document.getElementById("copy");
+const advancedOptionsButton = document.getElementById("advancedOptionsButton");
+const prefixInput = document.getElementById("prefixInput");
+
+const DEFAULT_PREFIX_VALUE = "alphabet-";
+const prefixValue = () => prefixInput.value || DEFAULT_PREFIX_VALUE;
+
+const lowerCaseLetters = [...Array(26)]
+	.map((val, i) => String.fromCharCode(i + 65).toLowerCase());
 
 const blankSpace = ":blank:";
 
@@ -19,19 +32,19 @@ const numberMap = {
 	0: ":zero:",
 };
 
-const specialCharsMap = {
-	"#": ":alphabet-hash:",
-	"?": ":alphabet-question:",
-	"!": ":alphabet-exclamation:",
-	"@": ":alphabet-at:",
-};
+const specialCharsMap = () => ({
+	"#": `:${prefixValue()}hash:`,
+	"?": `:${prefixValue()}question:`,
+	"!": `:${prefixValue()}exclamation:`,
+	"@": `:${prefixValue()}at:`,
+});
 
-const allSupportedEmoji = [
+const allSupportedEmoji = () => [
 	blankSpace,
 	...Object.values(wordMap),
 	...Object.values(numberMap),
-	...Object.values(specialCharsMap),
-	...lowerCaseLetters.map((letter) => `:alphabet-${letter}:`)
+	...Object.values(specialCharsMap()),
+	...lowerCaseLetters.map((letter) => `:${prefixValue()}${letter}:`)
 ];
 
 function flatten(arr) {
@@ -47,11 +60,11 @@ function alphabetize(input) {
 				return wordMap[match.toLowerCase()]; // Replaces words.
 			}
 
-			return match.replace(/([A-z])+?/g, ":alphabet-$1:"); // Replaces letters.
+			return match.replace(/([A-z])+?/g, `:${prefixValue()}$1:`); // Replaces letters.
 		})
 		.replace(/([^\S\r\n])+?/g, blankSpace) // Replace spaces.
 		.replace(/([0-9])+?/g, (match) => numberMap[match]) // Replaces numbers.
-		.replace(/([?!#@])+?/g, (match) => specialCharsMap[match]); // Replaces numbers.
+		.replace(/([?!#@])+?/g, (match) => specialCharsMap()[match]); // Replaces numbers.
 }
 
 function alphabetizePreview(alphabetized) {
@@ -59,7 +72,7 @@ function alphabetizePreview(alphabetized) {
 		.filter(Boolean)
 		.map((emojiName) => emojiName.toLowerCase());
 	const maybeFileNames = emojiNames.map((emojiName) => {
-		if (!allSupportedEmoji.includes(`:${emojiName}:`)) {
+		if (!allSupportedEmoji().includes(`:${emojiName}:`)) {
 			return emojiName.split('');
 		}
 
@@ -88,7 +101,6 @@ function alphabetizePreview(alphabetized) {
 		return image;
 	});
 
-
 	const previewWrapper = document.createElement("div");
 	previewWrapper.className = "previewWrapper";
 	flatten(nodes).forEach((node) => previewWrapper.appendChild(node));
@@ -101,20 +113,33 @@ function copy(element) {
 	document.execCommand("copy");
 }
 
-const input = document.getElementById("input");
-const output = document.getElementById("output");
-const preview = document.getElementById("preview");
-const copyButton = document.getElementById("copy");
+function toggleAdvancedOptions(advancedOptionSection) {
+	if (advancedOptionSection.style.display === "none") {
+		advancedOptionSection.style.display = "";
+	} else {
+		advancedOptionSection.style.display = "none";
+	}
+}
 
-// Handle text transform.
-input.addEventListener("keyup", () => {
+function textTransform() {
 	const alphabetized = alphabetize(input.value);
 	output.value = alphabetized;
 
-	const alphabetizedPreview = alphabetizePreview(alphabetized);
-	preview.innerHTML = "";
-	preview.appendChild(alphabetizedPreview);
-});
+	if (prefixValue() === DEFAULT_PREFIX_VALUE) {
+		const alphabetizedPreview = alphabetizePreview(alphabetized);
+		preview.innerHTML = "";
+		preview.appendChild(alphabetizedPreview);
+	} else {
+		preview.innerHTML = "[Preview Unavailable]";
+	}
+}
+
+// Update text transform on prefix change.
+prefixInput.addEventListener("keyup", textTransform);
+
+// Handle text transform on input change.
+input.addEventListener("keyup", textTransform);
 
 // Handle text copying.
 copyButton.addEventListener("click", () => copy(output));
+advancedOptionsButton.addEventListener("click", () => toggleAdvancedOptions(advancedOptions));

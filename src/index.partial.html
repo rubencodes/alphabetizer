@@ -2,7 +2,7 @@
 	<h1 class="pageTitle">
 		<span class="sr-only">Alphabetizer</span>
 	</h1>
-	<p class="pageSubtitle">Emojify your text to make it really :alphabet-p: :alphabet-o: :alphabet-p:</p>
+	<p class="pageSubtitle">Emojify your text to make it really :alphabet-p: :alphabet-o: :alphabet-p:
 </header>
 <main class="pageMain">
 	<section class="bodySection">
@@ -13,20 +13,35 @@
 		<h3 class="bodySectionTitle">
 			<button id="copy" class="copyButton">Click to copy</button>
 		</h3>
-		<textarea id="output" class="textOutput"  readonly></textarea>
+		<textarea id="output" class="textOutput" readonly></textarea>
 	</section>
-	<section class="bodySection">
+	<section id="previewSection" class="bodySection">
 		<h3 class="bodySectionTitle">
 			Preview
 		</h3>
 		<div id="preview"></div>
+
+		<br />
+		<button id="advancedOptionsButton" class="advancedOptionsButton">
+			(Toggle experimental options)
+		</button>
+		<div id="advancedOptionsSection" style="display: none">
+			<div>
+				<h4 class="advancedOptionTitle">
+					Custom Prefix
+				</h4>
+				<input id="prefixInput" class="advancedOptionInput" placeholder="alphabet-" value="alphabet-" />
+			</div>
+		</div>
 	</section>
-	<div class="githubButtons">
-		<a class="github-button" href="https://github.com/rubencodes/alphabetizer/fork"
-			data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-repo-forked"
-			data-size="large" data-show-count="true" aria-label="Fork rubencodes/alphabetizer on GitHub">Fork</a>
-		<a class="github-button" href="https://github.com/rubencodes/alphabetizer"
-			data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-star" data-size="large"
-			data-show-count="true" aria-label="Star rubencodes/alphabetizer on GitHub">Star</a>
-	</div>
+	<section class="bodySection">
+		<div class="githubButtons">
+			<a class="github-button" href="https://github.com/rubencodes/alphabetizer/fork"
+				data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-repo-forked"
+				data-size="large" data-show-count="true" aria-label="Fork rubencodes/alphabetizer on GitHub">Fork</a>
+			<a class="github-button" href="https://github.com/rubencodes/alphabetizer"
+				data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-star" data-size="large"
+				data-show-count="true" aria-label="Star rubencodes/alphabetizer on GitHub">Star</a>
+		</div>
+	</section>
 </main>

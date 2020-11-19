@@ -41,6 +41,25 @@ body {
 	background-position: left center;
 }
 
+.advancedOptionTitle {
+	margin: 0;
+	margin-top: 12px;
+}
+
+.advancedOptionInput {
+	margin-top: 8px;
+	margin-bottom: 20px;
+	width: 100%;
+}
+
+.advancedOptionsButton {
+	all: unset;
+	font-size: small;
+	text-decoration: underline;
+	font-weight: bold;
+	color: purple;
+}
+
 .pageMain {
 	display: grid;
 	grid-template: 135px 135px / 1fr 1fr;
@@ -63,13 +82,19 @@ body {
 	}
 }
 
+.advancedOptionInput,
+.textInput,
+.textOutput {
+	resize: none;
+	padding: 12px;
+	border-radius: 3px;
+	border: 1px solid gray;
+}
+
 .textInput,
 .textOutput {
 	width: 100%;
 	min-height: 100px;
-	resize: none;
-	padding: 12px;
-	border-radius: 3px;
 }
 
 .textOutput {
@@ -141,6 +166,7 @@ body {
 		}
 	}
 
+	.advancedOptionInput,
 	.textInput {
 		background-color: #444;
 		color: white;
@@ -152,7 +178,14 @@ body {
 		color: white;
 	}
 
+	.advancedOptionsButton,
 	.copyButton {
 		color: lightblue;
+	}
+
+	.advancedOptionsButton {
+		font-size: 12px;
+		padding-top: 8px;
+		vertical-align: top;
 	}
 }
