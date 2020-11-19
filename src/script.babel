@@ -34,6 +34,12 @@ const allSupportedEmoji = [
 	...lowerCaseLetters.map((letter) => `:alphabet-${letter}:`)
 ];
 
+function flatten(arr) {
+	return arr.reduce((soFar, current) => {
+		return [...soFar, ...(Array.isArray(current) ? current : [current])];
+	}, [])
+}
+
 function alphabetize(input) {
 	return input
 		.replace(/\w+/g, (match) => {
@@ -54,23 +60,26 @@ function alphabetizePreview(alphabetized) {
 		.map((emojiName) => emojiName.toLowerCase());
 	const maybeFileNames = emojiNames.map((emojiName) => {
 		if (!allSupportedEmoji.includes(`:${emojiName}:`)) {
-			return emojiName;
+			return emojiName.split('');
 		}
 
 		return `https://assets.codepen.io/1177378/${emojiName}.png`;
 	});
 	const nodes = maybeFileNames.map((maybeFileName) => {
-		const isFileName = maybeFileName.startsWith("https://");
+		const isFileName = typeof maybeFileName === 'string';
 		if (!isFileName) {
-			const isLineBreak = maybeFileName.match(/[\r\n]/) !== null;
-			if (isLineBreak) {
-				const br = document.createElement("br");
-				return br;
-			}
+			// Process each character individually.
+			return maybeFileName.map((char) => {
+				const isLineBreak = char.match(/[\r\n]/) !== null;
+				if (isLineBreak) {
+					const br = document.createElement("br");
+					return br;
+				}
 
-			const span = document.createElement("span");
-			span.innerText = maybeFileName;
-			return span;
+				const span = document.createElement("span");
+				span.innerText = char;
+				return span;
+			})
 		}
 
 		const image = document.createElement("img");
@@ -79,9 +88,10 @@ function alphabetizePreview(alphabetized) {
 		return image;
 	});
 
+
 	const previewWrapper = document.createElement("div");
 	previewWrapper.className = "previewWrapper";
-	nodes.forEach((node) => previewWrapper.appendChild(node));
+	flatten(nodes).forEach((node) => previewWrapper.appendChild(node));
 
 	return previewWrapper;
 }
