@@ -49,7 +49,9 @@ function alphabetize(input) {
 }
 
 function alphabetizePreview(alphabetized) {
-	const emojiNames = alphabetized.split(":").filter(Boolean);
+	const emojiNames = alphabetized.split(":")
+		.filter(Boolean)
+		.map((emojiName) => emojiName.toLowerCase());
 	const maybeFileNames = emojiNames.map((emojiName) => {
 		if (!allSupportedEmoji.includes(`:${emojiName}:`)) {
 			return emojiName;
