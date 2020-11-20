@@ -6,18 +6,23 @@ const advancedOptions = document.getElementById("advancedOptionsSection");
 const copyButton = document.getElementById("copy");
 const advancedOptionsButton = document.getElementById("advancedOptionsButton");
 const prefixInput = document.getElementById("prefixInput");
+const blankInput = document.getElementById("blankInput");
+const wordMapInput = document.getElementById("wordMapInput");
+const spacesBetweenEmojisInput = document.getElementById("spacesBetweenEmojisInput");
 
 const DEFAULT_PREFIX_VALUE = "alphabet-";
+const DEFAULT_BLANK_VALUE = ":blank:"
+const DEFAULT_WORD_VALUE = '{"lol":":lol:"}';
+
 const prefixValue = () => prefixInput.value || DEFAULT_PREFIX_VALUE;
+const blankSpace = () => blankInput.value || DEFAULT_BLANK_VALUE;
+const shouldAddSpacesBetweenEmojis = () => spacesBetweenEmojisInput.checked;
+
 
 const lowerCaseLetters = [...Array(26)]
 	.map((val, i) => String.fromCharCode(i + 65).toLowerCase());
 
-const blankSpace = ":blank:";
-
-const wordMap = {
-	"lol": ":lol:"
-};
+const wordMap = () => JSON.parse(wordMapInput.value || DEFAULT_WORD_VALUE);
 
 const numberMap = {
 	1: ":one:",
@@ -40,8 +45,8 @@ const specialCharsMap = () => ({
 });
 
 const allSupportedEmoji = () => [
-	blankSpace,
-	...Object.values(wordMap),
+	blankSpace(),
+	...Object.values(wordMap()),
 	...Object.values(numberMap),
 	...Object.values(specialCharsMap()),
 	...lowerCaseLetters.map((letter) => `:${prefixValue()}${letter}:`)
@@ -56,15 +61,16 @@ function flatten(arr) {
 function alphabetize(input) {
 	return input
 		.replace(/\w+/g, (match) => {
-			if (wordMap[match.toLowerCase()]) {
-				return wordMap[match.toLowerCase()]; // Replaces words.
+			if (wordMap()[match.toLowerCase()]) {
+				return wordMap()[match.toLowerCase()]; // Replaces words.
 			}
 
 			return match.replace(/([A-z])+?/g, `:${prefixValue()}$1:`); // Replaces letters.
 		})
-		.replace(/([^\S\r\n])+?/g, blankSpace) // Replace spaces.
 		.replace(/([0-9])+?/g, (match) => numberMap[match]) // Replaces numbers.
-		.replace(/([?!#@])+?/g, (match) => specialCharsMap()[match]); // Replaces numbers.
+		.replace(/([^\S\r\n])+?/g, blankSpace()) // Replace spaces.
+		.replace(/([?!#@])+?/g, (match) => specialCharsMap()[match]) // Replaces special mappings.
+		.replace(/(::)+?/g, `${shouldAddSpacesBetweenEmojis() ? ": :" : "::"}`); // Adds optional spacing between emojis.
 }
 
 function alphabetizePreview(alphabetized) {
@@ -124,7 +130,7 @@ function textTransform() {
 	const alphabetized = alphabetize(input.value);
 	output.value = alphabetized;
 
-	if (prefixValue() === DEFAULT_PREFIX_VALUE) {
+	if (!prefixInput.value && !wordMapInput.value && !blankInput.value) {
 		const alphabetizedPreview = alphabetizePreview(alphabetized);
 		previewWrapper.innerHTML = "";
 		previewWrapper.appendChild(alphabetizedPreview);
@@ -135,6 +141,9 @@ function textTransform() {
 
 // Update text transform on prefix change.
 prefixInput.addEventListener("keyup", textTransform);
+blankInput.addEventListener("keyup", textTransform);
+wordMapInput.addEventListener("keyup", textTransform);
+spacesBetweenEmojisInput.addEventListener("change", textTransform);
 
 // Handle text transform on input change.
 input.addEventListener("keyup", textTransform);
