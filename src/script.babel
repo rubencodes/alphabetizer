@@ -6,18 +6,32 @@ const advancedOptions = document.getElementById("advancedOptionsSection");
 const copyButton = document.getElementById("copy");
 const advancedOptionsButton = document.getElementById("advancedOptionsButton");
 const prefixInput = document.getElementById("prefixInput");
+const blankInput = document.getElementById("blankInput");
+const wordMapInput = document.getElementById("wordMapInput");
+const spacesBetweenEmojisInput = document.getElementById("spacesBetweenEmojisInput");
 
 const DEFAULT_PREFIX_VALUE = "alphabet-";
-const prefixValue = () => prefixInput.value || DEFAULT_PREFIX_VALUE;
+const DEFAULT_BLANK_VALUE = ":blank:"
+const DEFAULT_WORD_VALUE = '{"lol":":lol:"}';
+
+const getPrefixValue = () => prefixInput.value || DEFAULT_PREFIX_VALUE;
+const getBlankSpace = () => blankInput.value || DEFAULT_BLANK_VALUE;
+const shouldAddSpacesBetweenEmojis = () => spacesBetweenEmojisInput.checked;
+
 
 const lowerCaseLetters = [...Array(26)]
 	.map((val, i) => String.fromCharCode(i + 65).toLowerCase());
 
-const blankSpace = ":blank:";
-
-const wordMap = {
-	"lol": ":lol:"
-};
+const getValidWordMap = () => {
+	try {
+		const customWordMap = JSON.parse(wordMapInput.value || DEFAULT_WORD_VALUE);
+		wordMapInput.style.borderColor = null;
+		return customWordMap;
+	} catch (e) {
+		wordMapInput.style.borderColor = "red";
+		return {};
+	}
+}
 
 const numberMap = {
 	1: ":one:",
@@ -32,19 +46,19 @@ const numberMap = {
 	0: ":zero:",
 };
 
-const specialCharsMap = () => ({
-	"#": `:${prefixValue()}hash:`,
-	"?": `:${prefixValue()}question:`,
-	"!": `:${prefixValue()}exclamation:`,
-	"@": `:${prefixValue()}at:`,
+const getSpecialCharsMap = () => ({
+	"#": `:${getPrefixValue()}hash:`,
+	"?": `:${getPrefixValue()}question:`,
+	"!": `:${getPrefixValue()}exclamation:`,
+	"@": `:${getPrefixValue()}at:`,
 });
 
 const allSupportedEmoji = () => [
-	blankSpace,
-	...Object.values(wordMap),
+	getBlankSpace(),
+	...Object.values(getValidWordMap()),
 	...Object.values(numberMap),
-	...Object.values(specialCharsMap()),
-	...lowerCaseLetters.map((letter) => `:${prefixValue()}${letter}:`)
+	...Object.values(getSpecialCharsMap()),
+	...lowerCaseLetters.map((letter) => `:${getPrefixValue()}${letter}:`)
 ];
 
 function flatten(arr) {
@@ -54,17 +68,22 @@ function flatten(arr) {
 }
 
 function alphabetize(input) {
+	const wordMap = getValidWordMap();
+	const blankSpace = getBlankSpace();
+	const specialCharsMap = getSpecialCharsMap();
+	const prefixValue = getPrefixValue();
 	return input
 		.replace(/\w+/g, (match) => {
 			if (wordMap[match.toLowerCase()]) {
 				return wordMap[match.toLowerCase()]; // Replaces words.
 			}
 
-			return match.replace(/([A-z])+?/g, `:${prefixValue()}$1:`); // Replaces letters.
+			return match.replace(/([A-z])+?/g, `:${prefixValue}$1:`); // Replaces letters.
 		})
-		.replace(/([^\S\r\n])+?/g, blankSpace) // Replace spaces.
 		.replace(/([0-9])+?/g, (match) => numberMap[match]) // Replaces numbers.
-		.replace(/([?!#@])+?/g, (match) => specialCharsMap()[match]); // Replaces numbers.
+		.replace(/([^\S\r\n])+?/g, blankSpace) // Replace spaces.
+		.replace(/([?!#@])+?/g, (match) => specialCharsMap[match]) // Replaces special mappings.
+		.replace(/(::)+?/g, `${shouldAddSpacesBetweenEmojis() ? ": :" : "::"}`); // Adds optional spacing between emojis.
 }
 
 function alphabetizePreview(alphabetized) {
@@ -124,7 +143,7 @@ function textTransform() {
 	const alphabetized = alphabetize(input.value);
 	output.value = alphabetized;
 
-	if (prefixValue() === DEFAULT_PREFIX_VALUE) {
+	if (getPrefixValue() === DEFAULT_PREFIX_VALUE && wordMapInput.value === DEFAULT_WORD_VALUE && getBlankSpace() === DEFAULT_BLANK_VALUE) {
 		const alphabetizedPreview = alphabetizePreview(alphabetized);
 		previewWrapper.innerHTML = "";
 		previewWrapper.appendChild(alphabetizedPreview);
@@ -135,6 +154,9 @@ function textTransform() {
 
 // Update text transform on prefix change.
 prefixInput.addEventListener("keyup", textTransform);
+blankInput.addEventListener("keyup", textTransform);
+wordMapInput.addEventListener("keyup", textTransform);
+spacesBetweenEmojisInput.addEventListener("change", textTransform);
 
 // Handle text transform on input change.
 input.addEventListener("keyup", textTransform);

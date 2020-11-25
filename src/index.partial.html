@@ -20,8 +20,18 @@
 			Preview
 		</h3>
 		<div id="previewWrapper" class="previewWrapper"></div>
-
-		<br />
+	</section>
+	<section class="bodySection">
+		<div class="githubButtons">
+			<a class="github-button" href="https://github.com/rubencodes/alphabetizer/fork"
+				data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-repo-forked"
+				data-size="large" data-show-count="true" aria-label="Fork rubencodes/alphabetizer on GitHub">Fork</a>
+			<a class="github-button" href="https://github.com/rubencodes/alphabetizer"
+				data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-star"
+				data-size="large" data-show-count="true" aria-label="Star rubencodes/alphabetizer on GitHub">Star</a>
+		</div>
+	</section>
+	<section class="bodySection advancedOptionsSection">
 		<button id="advancedOptionsButton" class="advancedOptionsButton">
 			(Toggle experimental options)
 		</button>
@@ -30,18 +40,26 @@
 				<h4 class="advancedOptionTitle">
 					Custom Prefix
 				</h4>
-				<input id="prefixInput" class="advancedOptionInput" placeholder="alphabet-" value="alphabet-" />
+				<input id="prefixInput" class="advancedOptionInput" placeholder="alphabet-" />
 			</div>
-		</div>
-	</section>
-	<section class="bodySection">
-		<div class="githubButtons">
-			<a class="github-button" href="https://github.com/rubencodes/alphabetizer/fork"
-				data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-repo-forked"
-				data-size="large" data-show-count="true" aria-label="Fork rubencodes/alphabetizer on GitHub">Fork</a>
-			<a class="github-button" href="https://github.com/rubencodes/alphabetizer"
-				data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-star" data-size="large"
-				data-show-count="true" aria-label="Star rubencodes/alphabetizer on GitHub">Star</a>
+			<div>
+				<h4 class="advancedOptionTitle">
+					Custom Blanks
+				</h4>
+				<input id="blankInput" class="advancedOptionInput" placeholder=":blank:" />
+			</div>
+			<div>
+				<h4 class="advancedOptionTitle">
+					Custom Word Map (valid json)
+				</h4>
+				<input id="wordMapInput" class="advancedOptionInput" placeholder='{"lol":":lol:"}' />
+			</div>
+			<div>
+				<h4 class="advancedOptionTitle">
+					Spaces between emojis?
+				</h4>
+				<input id="spacesBetweenEmojisInput" class="advancedOptionInput" type="checkbox" value="false">
+			</div>
 		</div>
 	</section>
 </main>
