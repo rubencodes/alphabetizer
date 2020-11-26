@@ -16,6 +16,7 @@ const DEFAULT_WORD_VALUE = '{"lol":":lol:"}';
 
 const getPrefixValue = () => prefixInput.value || DEFAULT_PREFIX_VALUE;
 const getBlankSpace = () => blankInput.value || DEFAULT_BLANK_VALUE;
+const getWordMapValue = () => wordMapInput.value || DEFAULT_WORD_VALUE;
 const shouldAddSpacesBetweenEmojis = () => spacesBetweenEmojisInput.checked;
 
 
@@ -24,7 +25,7 @@ const lowerCaseLetters = [...Array(26)]
 
 const getValidWordMap = () => {
 	try {
-		const customWordMap = JSON.parse(wordMapInput.value || DEFAULT_WORD_VALUE);
+		const customWordMap = JSON.parse(getWordMapValue());
 		wordMapInput.style.borderColor = null;
 		return customWordMap;
 	} catch (e) {
@@ -143,7 +144,7 @@ function textTransform() {
 	const alphabetized = alphabetize(input.value);
 	output.value = alphabetized;
 
-	if (getPrefixValue() === DEFAULT_PREFIX_VALUE && wordMapInput.value === DEFAULT_WORD_VALUE && getBlankSpace() === DEFAULT_BLANK_VALUE) {
+	if (getPrefixValue() === DEFAULT_PREFIX_VALUE && getWordMapValue() === DEFAULT_WORD_VALUE && getBlankSpace() === DEFAULT_BLANK_VALUE) {
 		const alphabetizedPreview = alphabetizePreview(alphabetized);
 		previewWrapper.innerHTML = "";
 		previewWrapper.appendChild(alphabetizedPreview);
