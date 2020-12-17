@@ -10,7 +10,7 @@ const blankInput = document.getElementById("blankInput");
 const wordMapInput = document.getElementById("wordMapInput");
 const spacesBetweenEmojisInput = document.getElementById("spacesBetweenEmojisInput");
 
-const DEFAULT_PREFIX_VALUE = "alphabet-";
+const DEFAULT_PREFIX_VALUE = "alphabet-yellow-";
 const DEFAULT_BLANK_VALUE = ":blank:"
 const DEFAULT_WORD_VALUE = '{"lol":":lol:"}';
 
