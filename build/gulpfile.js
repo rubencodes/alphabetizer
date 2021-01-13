@@ -5,7 +5,7 @@ const { config, tasks } = require('../package.json');
 const { makeTask } = require('./util.js');
 
 /* Make sure each task has its key inserted. */
-Object.keys(tasks).forEach(key => {
+Object.keys(tasks).forEach((key) => {
   tasks[key].key = key;
 });
 
