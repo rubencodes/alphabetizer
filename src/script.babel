@@ -1,40 +1,14 @@
-const input = document.getElementById("input");
-const output = document.getElementById("output");
-const previewWrapper = document.getElementById("previewWrapper");
-const previewSection = document.getElementById("previewSection");
-const advancedOptions = document.getElementById("advancedOptionsSection");
-const copyButton = document.getElementById("copy");
-const advancedOptionsButton = document.getElementById("advancedOptionsButton");
-const prefixInput = document.getElementById("prefixInput");
-const blankInput = document.getElementById("blankInput");
-const wordMapInput = document.getElementById("wordMapInput");
-const spacesBetweenEmojisInput = document.getElementById("spacesBetweenEmojisInput");
+import * as React from "https://cdn.skypack.dev/react@17.0.1";
+import * as ReactDOM from "https://cdn.skypack.dev/react-dom@17.0.1";
+
+const { useMemo, useEffect, useCallback, useRef, useState } = React;
 
 const DEFAULT_PREFIX_VALUE = "alphabet-yellow-";
 const DEFAULT_BLANK_VALUE = ":blank:"
-const DEFAULT_WORD_VALUE = '{"lol":":lol:"}';
+const DEFAULT_WORD_MAP_VALUE = {};
+const DEFAULT_SPACES_BETWEEN_EMOJI_VALUE = false;
 
-const getPrefixValue = () => prefixInput.value || DEFAULT_PREFIX_VALUE;
-const getBlankSpace = () => blankInput.value || DEFAULT_BLANK_VALUE;
-const getWordMapValue = () => wordMapInput.value || DEFAULT_WORD_VALUE;
-const shouldAddSpacesBetweenEmojis = () => spacesBetweenEmojisInput.checked;
-
-
-const lowerCaseLetters = [...Array(26)]
-	.map((val, i) => String.fromCharCode(i + 65).toLowerCase());
-
-const getValidWordMap = () => {
-	try {
-		const customWordMap = JSON.parse(getWordMapValue());
-		wordMapInput.style.borderColor = null;
-		return customWordMap;
-	} catch (e) {
-		wordMapInput.style.borderColor = "red";
-		return {};
-	}
-}
-
-const numberMap = {
+const getNumberMap = () => ({
 	1: ":one:",
 	2: ":two:",
 	3: ":three:",
@@ -45,123 +19,412 @@ const numberMap = {
 	8: ":eight:",
 	9: ":nine:",
 	0: ":zero:",
-};
-
-const getSpecialCharsMap = () => ({
-	"#": `:${getPrefixValue()}hash:`,
-	"?": `:${getPrefixValue()}question:`,
-	"!": `:${getPrefixValue()}exclamation:`,
-	"@": `:${getPrefixValue()}at:`,
+});
+const getSpecialCharsMap = (prefixValue) => ({
+	"#": `:${prefixValue}hash:`,
+	"?": `:${prefixValue}question:`,
+	"!": `:${prefixValue}exclamation:`,
+	"@": `:${prefixValue}at:`,
 });
 
-const allSupportedEmoji = () => [
-	getBlankSpace(),
-	...Object.values(getValidWordMap()),
-	...Object.values(numberMap),
-	...Object.values(getSpecialCharsMap()),
-	...lowerCaseLetters.map((letter) => `:${getPrefixValue()}${letter}:`)
-];
-
-function flatten(arr) {
-	return arr.reduce((soFar, current) => {
-		return [...soFar, ...(Array.isArray(current) ? current : [current])];
-	}, [])
-}
-
-function alphabetize(input) {
-	const wordMap = getValidWordMap();
-	const blankSpace = getBlankSpace();
-	const specialCharsMap = getSpecialCharsMap();
-	const prefixValue = getPrefixValue();
-	return input
-		.replace(/\w+/g, (match) => {
-			if (wordMap[match.toLowerCase()]) {
-				return wordMap[match.toLowerCase()]; // Replaces words.
-			}
-
-			return match.replace(/([A-z])+?/g, `:${prefixValue}$1:`); // Replaces letters.
-		})
-		.replace(/([0-9])+?/g, (match) => numberMap[match]) // Replaces numbers.
-		.replace(/([^\S\r\n])+?/g, blankSpace) // Replace spaces.
-		.replace(/([?!#@])+?/g, (match) => specialCharsMap[match]) // Replaces special mappings.
-		.replace(/(::)+?/g, `${shouldAddSpacesBetweenEmojis() ? ": :" : "::"}`); // Adds optional spacing between emojis.
-}
-
-function alphabetizePreview(alphabetized) {
-	const emojiNames = alphabetized.split(":")
-		.filter(Boolean)
-		.map((emojiName) => emojiName.toLowerCase());
-	const maybeFileNames = emojiNames.map((emojiName) => {
-		if (!allSupportedEmoji().includes(`:${emojiName}:`)) {
-			return emojiName.split('');
-		}
-
-		return `https://assets.codepen.io/1177378/${emojiName}.png`;
-	});
-	const nodes = maybeFileNames.map((maybeFileName) => {
-		const isFileName = typeof maybeFileName === 'string';
-		if (!isFileName) {
-			// Process each character individually.
-			return maybeFileName.map((char) => {
-				const isLineBreak = char.match(/[\r\n]/) !== null;
-				if (isLineBreak) {
-					const br = document.createElement("br");
-					return br;
+function useAlphabetizer({
+	inputValue, 
+	prefixValue, 
+	blankValue, 
+	wordMapValue, 
+	spacesBetweenEmojiValue,
+}) {
+	const numberMap = useMemo(() => getNumberMap());
+	const specialCharsMap = useMemo(() => getSpecialCharsMap(prefixValue), [prefixValue]);
+	
+	const alphabetized = useMemo(() => {
+		return inputValue
+			.replace(/\w+/g, (match) => {
+				if (wordMapValue[match.toLowerCase()]) {
+					return wordMapValue[match.toLowerCase()]; // Replaces words.
 				}
 
-				const span = document.createElement("span");
-				span.innerText = char;
-				return span;
+				return match.replace(/([A-z])+?/g, `:${prefixValue}$1:`); // Replaces letters.
 			})
+			.replace(/([0-9])+?/g, (match) => numberMap[match]) // Replaces numbers.
+			.replace(/([^\S\r\n])+?/g, blankValue) // Replace spaces.
+			.replace(/([?!#@])+?/g, (match) => specialCharsMap[match]) // Replaces special mappings.
+			.replace(/(::)+?/g, `${spacesBetweenEmojiValue ? ": :" : "::"}`); // Adds optional spacing between emojis.
+	}, [
+		numberMap,
+		specialCharsMap,
+		inputValue,
+		prefixValue,
+		blankValue,
+		wordMapValue,
+		spacesBetweenEmojiValue,
+	]);
+	const alphabetizedPreview = useMemo(() => {
+		if (prefixValue != DEFAULT_PREFIX_VALUE || 
+				Object.keys(wordMapValue).length != 0 || 
+				blankValue != DEFAULT_BLANK_VALUE) {
+			return null;
 		}
+		
+		const lowerCaseLetters = [...Array(26)]
+			.map((val, i) => String.fromCharCode(i + 65).toLowerCase());
+		const allSupportedEmoji = [
+			blankValue,
+			...Object.values(wordMapValue),
+			...Object.values(specialCharsMap),
+			...Object.values(numberMap),
+			...lowerCaseLetters.map((letter) => `:${prefixValue}${letter}:`)
+		];
 
-		const image = document.createElement("img");
-		image.src = maybeFileName;
+		const emojiNames = alphabetized.split(":")
+			.filter(Boolean)
+			.map((emojiName) => emojiName.toLowerCase());
+		return emojiNames.map((emojiName) => {
+			if (!allSupportedEmoji.includes(`:${emojiName}:`)) {
+				return emojiName.split('');
+			}
 
-		return image;
+			return `https://assets.codepen.io/1177378/${emojiName}.png`;
+		});
+	}, [
+		numberMap,
+		specialCharsMap,
+		alphabetized,
+		prefixValue,
+		blankValue,
+		wordMapValue,
+	]);
+	
+	return [alphabetized, alphabetizedPreview];
+}
+
+const Header = () => (
+	<header className="pageHeader">
+		<h1 className="pageTitle">
+			<span className="sr-only">Alphabetizer</span>
+		</h1>
+		<p className="pageSubtitle">
+			Emojify your text to make it really :alphabet-yellow-p: :alphabet-yellow-o: :alphabet-yellow-p:
+		</p>
+	</header>
+);
+
+const Main = ({ className = "", children, ...props }) => (
+	<main className={"pageMain " + className} {...props}>
+		{children}
+	</main>
+);
+
+const MainSection = ({ className = "", children, ...props }) => (
+	<section className={"bodySection " + className} {...props}>
+		{children}
+	</section>
+);
+
+const MainSectionTitle = ({ className = "", children, ...props }) => (
+	<h3 className={"bodySectionTitle " + className} {...props}>
+		{children}
+	</h3>
+);
+
+const InputArea = ({ inputValue, setInputValue, showSettings }) => (
+	<MainSection>
+		<MainSectionTitle>
+			Type here...
+			<button className="advancedOptionsButton" onClick={showSettings}>
+				Advanced
+			</button>
+		</MainSectionTitle>
+		<textarea
+			className="textInput"
+			placeholder="e.g. hello world"
+			value={inputValue}
+			onChange={(e) => setInputValue(e.target.value)}
+			// autoFocus
+		/>
+	</MainSection>
+);
+
+const OutputArea = ({ outputValue }) => {
+	// Handle text copying.
+	const outputRef = useRef(null);
+	const onCopyClick = () => {
+		outputRef.current?.select();
+		document.execCommand("copy");
+	};
+	
+	return (
+		<MainSection>
+			<MainSectionTitle>
+				Output
+				<button className="advancedOptionsButton" onClick={onCopyClick}>
+					Copy Output
+				</button>
+			</MainSectionTitle>
+			<textarea
+				ref={outputRef}
+				className="textOutput"
+				value={outputValue}
+				readOnly
+			/>
+		</MainSection>
+	);
+};
+
+const PreviewArea = ({ previewValue }) => (
+	<MainSection>
+		<MainSectionTitle>
+			Preview
+		</MainSectionTitle>
+		<div className="previewWrapper">
+			{previewValue === null && (
+				<span>[Preview Unavailable]</span>
+			)}
+			{previewValue?.map((maybeFileName, index) => {
+				const isFileName = typeof maybeFileName === 'string';
+				if (!isFileName) {
+					// Process each character individually.
+					return maybeFileName.map((char, index) => {
+						const isLineBreak = char.match(/[\r\n]/) !== null;
+						if (isLineBreak) {
+							return <br key={`${char}${index}`} />;
+						}
+
+						return <span key={`${char}${index}`}>{char}</span>;
+					})
+				}
+
+				return <img key={`${maybeFileName}${index}`} src={maybeFileName} />;
+			})}
+		</div>
+	</MainSection>
+);
+
+const GithubArea = () => (
+	<MainSection>
+		<div className="githubButtons">
+			<a 
+				className="github-button" 
+				href="https://github.com/rubencodes/alphabetizer/fork"
+				data-color-scheme="no-preference: light; light: light; dark: dark;" 
+				data-icon="octicon-repo-forked"
+				data-size="large" 
+				data-show-count="true" 
+				aria-label="Fork rubencodes/alphabetizer on GitHub"
+			>
+				Fork
+			</a>
+			<a 
+				className="github-button" 
+				href="https://github.com/rubencodes/alphabetizer"
+				data-color-scheme="no-preference: light; light: light; dark: dark;" 
+				data-icon="octicon-star"
+				data-size="large" 
+				data-show-count="true"
+				aria-label="Star rubencodes/alphabetizer on GitHub"
+			>
+				Star
+			</a>
+		</div>
+	</MainSection>
+);
+
+const AdvancedSettingsArea = ({
+	hideSettings,
+	prefixValue,
+	setPrefixValue,
+	blankValue,
+	setBlankValue,
+	wordMapValue,
+	setWordMapValue,
+	spacesBetweenEmojiValue,
+	setSpacesBetweenEmojiValue,
+}) => {
+	const [customWordList, setCustomWordList] = useState([{ key: "", value: "" }]);
+	const onAddCustomWord = () => {
+		setCustomWordList((currentCustomWordList) => {
+			return [...currentCustomWordList, { key: "", value: "" }];
+		});
+	};
+	const onRemoveCustomWord = (index) => {
+		setCustomWordList((currentCustomWordList) => {
+			return [
+				...currentCustomWordList.slice(0, index),
+				...currentCustomWordList.slice(index + 1),
+			];
+		});
+	};
+	const updateKey = (index, key) => {
+		setCustomWordList((currentCustomWordList) => {
+			return [
+				...currentCustomWordList.slice(0, index),
+				{ ...currentCustomWordList[index], key },
+				...currentCustomWordList.slice(index + 1),
+			];
+		});
+	};
+	const updateValue = (index, value) => {
+		setCustomWordList((currentCustomWordList) => {
+			return [
+				...currentCustomWordList.slice(0, index),
+				{ ...currentCustomWordList[index], value },
+				...currentCustomWordList.slice(index + 1),
+			];
+		});
+	};
+	useEffect(() => {
+		const updatedWordMapValue = customWordList
+			.reduce((acc, { key, value }) => {
+				if (!key || !value) {
+					return acc;
+				}
+				
+				return {
+					...acc,
+					[key]: value,
+				};
+			}, {});
+		
+		setWordMapValue(updatedWordMapValue);
+	}, [customWordList]);
+	
+	return (
+		<div className="advancedOptionsSection">
+			<div className="advancedOptionsContainer">
+				<MainSectionTitle>
+					Advanced Settings
+					<button 
+						className="advancedOptionXButton" 
+						onClick={hideSettings}
+					>
+						✖
+					</button>
+				</MainSectionTitle>
+				<div>
+					<h4 className="advancedOptionTitle">
+						Custom Prefix
+					</h4>
+					<input 
+						className="advancedOptionInput"
+						placeholder={DEFAULT_PREFIX_VALUE}
+						value={prefixValue}
+						onChange={(e) => setPrefixValue(e.target.value)}
+						/>
+				</div>
+				<div>
+					<h4 className="advancedOptionTitle">
+						Custom Blanks
+					</h4>
+					<input 
+						className="advancedOptionInput"
+						placeholder={DEFAULT_BLANK_VALUE}
+						value={blankValue}
+						onChange={(e) => setBlankValue(e.target.value)}
+						/>
+				</div>
+				<div>
+					<h4 className="advancedOptionTitle">
+						Custom Emoji
+						<button 
+							className="advancedOptionsButton" 
+							onClick={onAddCustomWord}
+							>
+							+ Add
+						</button>
+					</h4>
+					{customWordList.map(({ key, value }, index) => (
+						<li className="advancedOptionListItem">
+							<input 
+								className="advancedOptionInput"
+								placeholder="lol"
+								value={key}
+								onChange={(e) => updateKey(index, e.target.value)}
+								/>
+							<input 
+								className="advancedOptionInput"
+								placeholder=":lol:"
+								value={value}
+								onChange={(e) => updateValue(index, e.target.value)}
+								/>
+							<button 
+								className="advancedOptionXButton"
+								onClick={() => onRemoveCustomWord(index)}
+								>
+								✖
+							</button>
+						</li>
+					))}
+				</div>
+				<div>
+					<h4 className="advancedOptionTitle">
+						Spaces between emojis?
+					</h4>
+					<input 
+						className="advancedOptionInput spacesBetweenEmojisInput"
+						type="checkbox"
+						value={spacesBetweenEmojiValue}
+						onChange={(e) => setSpacesBetweenEmojiValue(e.target.checked)}
+						/>
+				</div>
+			</div>
+		</div>
+	);
+};
+
+const App = () => {
+	// Input:
+	const [inputValue, setInputValue] = useState("");
+	
+	// Settings:
+	const [isShowingSettings, setIsShowingSettings] = useState(false);
+	const showSettings = () => setIsShowingSettings(true);
+	const hideSettings = () => setIsShowingSettings(false);
+	const [prefixValue, setPrefixValue] = useState(DEFAULT_PREFIX_VALUE);
+	const [blankValue, setBlankValue] = useState(DEFAULT_BLANK_VALUE);
+	const [wordMapValue, setWordMapValue] = useState(DEFAULT_WORD_MAP_VALUE);
+	const [spacesBetweenEmojiValue, setSpacesBetweenEmojiValue] = useState(DEFAULT_SPACES_BETWEEN_EMOJI_VALUE);
+	
+	// Output:
+	const [outputValue, previewValue] = useAlphabetizer({
+		inputValue, 
+		prefixValue, 
+		blankValue, 
+		wordMapValue, 
+		spacesBetweenEmojiValue,
 	});
+	
+	return (
+		<>
+			<Header />
+			<Main>
+				<InputArea 
+					inputValue={inputValue}
+					setInputValue={setInputValue}
+					showSettings={showSettings}
+				/>
+				<OutputArea
+					outputValue={outputValue}
+				/>
+				<PreviewArea
+					previewValue={previewValue}
+				/>
+				<GithubArea />
+				{isShowingSettings && (
+					<AdvancedSettingsArea
+						hideSettings={hideSettings}
+						prefixValue={prefixValue}
+						setPrefixValue={setPrefixValue}
+						blankValue={blankValue}
+						setBlankValue={setBlankValue}
+						wordMapValue={wordMapValue}
+						setWordMapValue={setWordMapValue}
+						spacesBetweenEmojiValue={spacesBetweenEmojiValue}
+						setSpacesBetweenEmojiValue={setSpacesBetweenEmojiValue}
+					/>
+				)}
+			</Main>
+		</>
+	);
+};
 
-	const preview = document.createElement("div");
-	flatten(nodes).forEach((node) => preview.appendChild(node));
-
-	return preview;
-}
-
-function copy(element) {
-	element.select();
-	document.execCommand("copy");
-}
-
-function toggleAdvancedOptions(advancedOptionSection) {
-	if (advancedOptionSection.style.display === "none") {
-		advancedOptionSection.style.display = "";
-	} else {
-		advancedOptionSection.style.display = "none";
-	}
-}
-
-function textTransform() {
-	const alphabetized = alphabetize(input.value);
-	output.value = alphabetized;
-
-	if (getPrefixValue() === DEFAULT_PREFIX_VALUE && getWordMapValue() === DEFAULT_WORD_VALUE && getBlankSpace() === DEFAULT_BLANK_VALUE) {
-		const alphabetizedPreview = alphabetizePreview(alphabetized);
-		previewWrapper.innerHTML = "";
-		previewWrapper.appendChild(alphabetizedPreview);
-	} else {
-		previewWrapper.innerHTML = "[Preview Unavailable]";
-	}
-}
-
-// Update text transform on prefix change.
-prefixInput.addEventListener("keyup", textTransform);
-blankInput.addEventListener("keyup", textTransform);
-wordMapInput.addEventListener("keyup", textTransform);
-spacesBetweenEmojisInput.addEventListener("change", textTransform);
-
-// Handle text transform on input change.
-input.addEventListener("keyup", textTransform);
-
-// Handle text copying.
-copyButton.addEventListener("click", () => copy(output));
-advancedOptionsButton.addEventListener("click", () => toggleAdvancedOptions(advancedOptions));
+ReactDOM.render(<App />, document.getElementById("root"));
