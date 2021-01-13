@@ -1,3 +1,23 @@
+$primary-background--light: white;
+$primary-foreground--light: black;
+$primary-border--light: gray;
+$secondary-foreground--light: dimgray;
+$link-foreground--light: purple;
+$input-background--light: white;
+$disabled-background--light: #eee;
+$disabled-foreground--light: black;
+$disabled-border--light: #ddd;
+
+$primary-background--dark: #222;
+$primary-foreground--dark: white;
+$primary-border--dark: black;
+$secondary-foreground--dark: #bbb;
+$link-foreground--dark: lightblue;
+$input-background--dark: #444;
+$disabled-background--dark: #333;
+$disabled-foreground--dark: white;
+$disabled-border--dark: #111;
+
 * {
 	box-sizing: border-box;
 }
@@ -6,9 +26,9 @@ body {
 	width: 100%;
 	min-height: 100%;
 	padding: 20px 20px;
-	background-color: white;
-	color: black;
 	font-family: 'Noto Sans TC', sans-serif;
+	background-color: $primary-background--light;
+	color: $primary-foreground--light;
 }
 
 .pageHeader,
@@ -26,8 +46,8 @@ body {
 
 	.pageSubtitle {
 		margin-top: 0.25em;
-		color: dimgray;
 		user-select: none;
+		color: $secondary-foreground--light;
 	}
 }
 
@@ -60,9 +80,11 @@ body {
 	font-size: small;
 	text-decoration: underline;
 	font-weight: bold;
-	color: purple;
 	user-select: none;
 	cursor: pointer;
+	color: $link-foreground--light;
+	font-size: 12px;
+	vertical-align: top;
 }
 
 .pageMain {
@@ -93,7 +115,8 @@ body {
 	resize: none;
 	padding: 12px;
 	border-radius: 3px;
-	border: 1px solid gray;
+	background-color: $input-background--light;
+	border: 1px solid $primary-border--light;
 }
 
 .textInput,
@@ -103,14 +126,15 @@ body {
 }
 
 .textOutput {
-	background-color: #eee;
-	border-color: #ddd;
+	background-color: $disabled-background--light;
+	border-color: $disabled-border--light;
+	color: $disabled-foreground--light;
 	outline: none;
 }
 
 .copyButton {
 	all: unset;
-	color: purple;
+	color: $link-foreground--light;
 	font-size: inherit;
 	font-weight: inherit;
 	text-decoration: underline;
@@ -160,15 +184,14 @@ body {
 }
 
 .advancedOptionsContainer {
-	margin-top: auto;
-	margin-bottom: auto;
 	display: grid;
 	grid-template: auto / 1fr;
 	grid-gap: 0 20px;
-	
-	background: white;
+	margin-top: auto;
+	margin-bottom: auto;
 	padding: 20px;
 	border-radius: 3px;
+	background: $primary-background--light;
 }
 
 .advancedOptionListItem {
@@ -221,39 +244,35 @@ body {
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
 	body {
-		background-color: #222;
-		color: white;
+		background-color: $primary-background--dark;
+		color: $primary-foreground--dark;
 	}
 
 	.pageHeader {
 		.pageSubtitle {
-			color: #bbb;
+			color: $secondary-foreground--dark;
 		}
 	}
 	
 	.advancedOptionsContainer {
-		background-color: #222;
+		background-color: $primary-background--dark;
 	}
 
 	.advancedOptionInput,
 	.textInput {
-		background-color: #444;
-		color: white;
+		background-color: $input-background--dark;
+		border-color: $primary-border--dark;
+		color: $primary-foreground--dark;
 	}
 
 	.textOutput {
-		background-color: #333;
-		border-color: #111;
-		color: white;
+		background-color: $disabled-background--dark;
+		border-color: $disabled-border--dark;
+		color: $disabled-foreground--dark;
 	}
 
 	.advancedOptionsButton,
 	.copyButton {
-		color: lightblue;
-	}
-
-	.advancedOptionsButton {
-		font-size: 12px;
-		vertical-align: top;
+		color: $link-foreground--dark;
 	}
 }
