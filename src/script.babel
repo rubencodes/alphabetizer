@@ -1,7 +1,5 @@
-import * as React from "https://cdn.skypack.dev/react@17.0.1";
-import * as ReactDOM from "https://cdn.skypack.dev/react-dom@17.0.1";
-
-const { useMemo, useEffect, useCallback, useRef, useState } = React;
+import React, { useMemo, useEffect, useRef, useState } from "react";
+import ReactDOM from "react-dom";
 
 const DEFAULT_PREFIX_VALUE = "alphabet-yellow-";
 const DEFAULT_BLANK_VALUE = ":blank:"
