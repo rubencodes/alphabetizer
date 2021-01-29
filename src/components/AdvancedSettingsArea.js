@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+
 import MainSectionTitle from './MainSectionTitle';
+import { DEFAULT_BLANK_VALUE, DEFAULT_PREFIX_VALUE } from '../utilities/constants';
 
 const AdvancedSettingsArea = ({
 	hideSettings,
@@ -57,7 +59,7 @@ const AdvancedSettingsArea = ({
 			}, {});
 
 		setWordMapValue(updatedWordMapValue);
-	}, [customWordList]);
+	}, [customWordList, setWordMapValue]);
 
 	return (
 		<div className="advancedOptionsSection">
