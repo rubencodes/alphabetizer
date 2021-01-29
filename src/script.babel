@@ -28,15 +28,15 @@ const getSpecialCharsMap = (prefixValue) => ({
 });
 
 function useAlphabetizer({
-	inputValue, 
-	prefixValue, 
-	blankValue, 
-	wordMapValue, 
+	inputValue,
+	prefixValue,
+	blankValue,
+	wordMapValue,
 	spacesBetweenEmojiValue,
 }) {
 	const numberMap = useMemo(() => getNumberMap());
 	const specialCharsMap = useMemo(() => getSpecialCharsMap(prefixValue), [prefixValue]);
-	
+
 	const alphabetized = useMemo(() => {
 		return inputValue
 			.replace(/\w+/g, (match) => {
@@ -60,12 +60,12 @@ function useAlphabetizer({
 		spacesBetweenEmojiValue,
 	]);
 	const alphabetizedPreview = useMemo(() => {
-		if (prefixValue != DEFAULT_PREFIX_VALUE || 
-				Object.keys(wordMapValue).length != 0 || 
+		if (prefixValue != DEFAULT_PREFIX_VALUE ||
+				Object.keys(wordMapValue).length != 0 ||
 				blankValue != DEFAULT_BLANK_VALUE) {
 			return null;
 		}
-		
+
 		const lowerCaseLetters = [...Array(26)]
 			.map((val, i) => String.fromCharCode(i + 65).toLowerCase());
 		const allSupportedEmoji = [
@@ -94,7 +94,7 @@ function useAlphabetizer({
 		blankValue,
 		wordMapValue,
 	]);
-	
+
 	return [alphabetized, alphabetizedPreview];
 }
 
@@ -152,7 +152,7 @@ const OutputArea = ({ outputValue }) => {
 		outputRef.current?.select();
 		document.execCommand("copy");
 	};
-	
+
 	return (
 		<MainSection>
 			<MainSectionTitle>
@@ -200,34 +200,43 @@ const PreviewArea = ({ previewValue }) => (
 	</MainSection>
 );
 
-const GithubArea = () => (
-	<MainSection>
-		<div className="githubButtons">
-			<a 
-				className="github-button" 
-				href="https://github.com/rubencodes/alphabetizer/fork"
-				data-color-scheme="no-preference: light; light: light; dark: dark;" 
-				data-icon="octicon-repo-forked"
-				data-size="large" 
-				data-show-count="true" 
-				aria-label="Fork rubencodes/alphabetizer on GitHub"
-			>
-				Fork
+const GithubArea = () => {
+	useEffect(() => {
+		const script = document.createElement('script');
+		script.src = 'https://buttons.github.io/buttons.js';
+		script.async = true;
+		document.body.appendChild(script);
+	}, []);
+
+	return (
+		<MainSection>
+			<div className="githubButtons">
+				<a
+					className="github-button"
+					href="https://github.com/rubencodes/alphabetizer/fork"
+					data-color-scheme="no-preference: light; light: light; dark: dark;"
+					data-icon="octicon-repo-forked"
+					data-size="large"
+					data-show-count="true"
+					aria-label="Fork rubencodes/alphabetizer on GitHub"
+				>
+					Fork
 			</a>
-			<a 
-				className="github-button" 
-				href="https://github.com/rubencodes/alphabetizer"
-				data-color-scheme="no-preference: light; light: light; dark: dark;" 
-				data-icon="octicon-star"
-				data-size="large" 
-				data-show-count="true"
-				aria-label="Star rubencodes/alphabetizer on GitHub"
-			>
-				Star
+				<a
+					className="github-button"
+					href="https://github.com/rubencodes/alphabetizer"
+					data-color-scheme="no-preference: light; light: light; dark: dark;"
+					data-icon="octicon-star"
+					data-size="large"
+					data-show-count="true"
+					aria-label="Star rubencodes/alphabetizer on GitHub"
+				>
+					Star
 			</a>
-		</div>
-	</MainSection>
-);
+			</div>
+		</MainSection>
+	);
+};
 
 const AdvancedSettingsArea = ({
 	hideSettings,
@@ -235,7 +244,6 @@ const AdvancedSettingsArea = ({
 	setPrefixValue,
 	blankValue,
 	setBlankValue,
-	wordMapValue,
 	setWordMapValue,
 	spacesBetweenEmojiValue,
 	setSpacesBetweenEmojiValue,
@@ -278,23 +286,23 @@ const AdvancedSettingsArea = ({
 				if (!key || !value) {
 					return acc;
 				}
-				
+
 				return {
 					...acc,
 					[key]: value,
 				};
 			}, {});
-		
+
 		setWordMapValue(updatedWordMapValue);
 	}, [customWordList]);
-	
+
 	return (
 		<div className="advancedOptionsSection">
 			<div className="advancedOptionsContainer">
 				<MainSectionTitle>
 					Advanced Settings
-					<button 
-						className="advancedOptionXButton" 
+					<button
+						className="advancedOptionXButton"
 						onClick={hideSettings}
 					>
 						✖
@@ -304,7 +312,7 @@ const AdvancedSettingsArea = ({
 					<h4 className="advancedOptionTitle">
 						Custom Prefix
 					</h4>
-					<input 
+					<input
 						className="advancedOptionInput"
 						placeholder={DEFAULT_PREFIX_VALUE}
 						value={prefixValue}
@@ -315,7 +323,7 @@ const AdvancedSettingsArea = ({
 					<h4 className="advancedOptionTitle">
 						Custom Blanks
 					</h4>
-					<input 
+					<input
 						className="advancedOptionInput"
 						placeholder={DEFAULT_BLANK_VALUE}
 						value={blankValue}
@@ -325,8 +333,8 @@ const AdvancedSettingsArea = ({
 				<div>
 					<h4 className="advancedOptionTitle">
 						Custom Emoji
-						<button 
-							className="advancedOptionsButton" 
+						<button
+							className="advancedOptionsButton"
 							onClick={onAddCustomWord}
 							>
 							+ Add
@@ -334,19 +342,19 @@ const AdvancedSettingsArea = ({
 					</h4>
 					{customWordList.map(({ key, value }, index) => (
 						<li className="advancedOptionListItem">
-							<input 
+							<input
 								className="advancedOptionInput"
 								placeholder="lol"
 								value={key}
 								onChange={(e) => updateKey(index, e.target.value)}
 								/>
-							<input 
+							<input
 								className="advancedOptionInput"
 								placeholder=":lol:"
 								value={value}
 								onChange={(e) => updateValue(index, e.target.value)}
 								/>
-							<button 
+							<button
 								className="advancedOptionXButton"
 								onClick={() => onRemoveCustomWord(index)}
 								>
@@ -359,7 +367,7 @@ const AdvancedSettingsArea = ({
 					<h4 className="advancedOptionTitle">
 						Spaces between emojis?
 					</h4>
-					<input 
+					<input
 						className="advancedOptionInput spacesBetweenEmojisInput"
 						type="checkbox"
 						value={spacesBetweenEmojiValue}
@@ -374,7 +382,7 @@ const AdvancedSettingsArea = ({
 const App = () => {
 	// Input:
 	const [inputValue, setInputValue] = useState("");
-	
+
 	// Settings:
 	const [isShowingSettings, setIsShowingSettings] = useState(false);
 	const showSettings = () => setIsShowingSettings(true);
@@ -383,21 +391,21 @@ const App = () => {
 	const [blankValue, setBlankValue] = useState(DEFAULT_BLANK_VALUE);
 	const [wordMapValue, setWordMapValue] = useState(DEFAULT_WORD_MAP_VALUE);
 	const [spacesBetweenEmojiValue, setSpacesBetweenEmojiValue] = useState(DEFAULT_SPACES_BETWEEN_EMOJI_VALUE);
-	
+
 	// Output:
 	const [outputValue, previewValue] = useAlphabetizer({
-		inputValue, 
-		prefixValue, 
-		blankValue, 
-		wordMapValue, 
+		inputValue,
+		prefixValue,
+		blankValue,
+		wordMapValue,
 		spacesBetweenEmojiValue,
 	});
-	
+
 	return (
 		<>
 			<Header />
 			<Main>
-				<InputArea 
+				<InputArea
 					inputValue={inputValue}
 					setInputValue={setInputValue}
 					showSettings={showSettings}
