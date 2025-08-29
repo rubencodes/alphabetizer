@@ -1,22 +1,26 @@
-$primary-background--light: white;
-$primary-foreground--light: black;
-$primary-border--light: gray;
-$secondary-foreground--light: dimgray;
-$link-foreground--light: purple;
-$input-background--light: white;
-$disabled-background--light: #eee;
-$disabled-foreground--light: black;
-$disabled-border--light: #ddd;
+:root {
+	/* Light mode variables */
+	--primary-background--light: white;
+	--primary-foreground--light: black;
+	--primary-border--light: gray;
+	--secondary-foreground--light: dimgray;
+	--link-foreground--light: purple;
+	--input-background--light: white;
+	--disabled-background--light: #eee;
+	--disabled-foreground--light: black;
+	--disabled-border--light: #ddd;
 
-$primary-background--dark: #222;
-$primary-foreground--dark: white;
-$primary-border--dark: black;
-$secondary-foreground--dark: #bbb;
-$link-foreground--dark: lightblue;
-$input-background--dark: #444;
-$disabled-background--dark: #333;
-$disabled-foreground--dark: white;
-$disabled-border--dark: #111;
+	/* Dark mode variables */
+	--primary-background--dark: #222;
+	--primary-foreground--dark: white;
+	--primary-border--dark: black;
+	--secondary-foreground--dark: #bbb;
+	--link-foreground--dark: lightblue;
+	--input-background--dark: #444;
+	--disabled-background--dark: #333;
+	--disabled-foreground--dark: white;
+	--disabled-border--dark: #111;
+}
 
 * {
 	box-sizing: border-box;
@@ -26,8 +30,8 @@ body {
 	width: 100%;
 	min-height: 100%;
 	padding: 20px 20px;
-	background-color: $primary-background--light;
-	color: $primary-foreground--light;
+	background-color: var(--primary-background--light);
+	color: var(--primary-foreground--light);
 	font-family: 'Noto Sans TC', sans-serif;
 }
 
@@ -39,15 +43,15 @@ body {
 }
 
 .pageHeader {
-	.pageTitle {
+	& .pageTitle {
 		margin-bottom: 4px;
 		user-select: none;
 	}
 
-	.pageSubtitle {
+	& .pageSubtitle {
 		margin-top: 0.25em;
 		user-select: none;
-		color: $secondary-foreground--light;
+		color: var(--secondary-foreground--light);
 	}
 }
 
@@ -82,7 +86,7 @@ body {
 	font-weight: bold;
 	user-select: none;
 	cursor: pointer;
-	color: $link-foreground--light;
+	color: var(--link-foreground--light);
 	font-size: 12px;
 	vertical-align: top;
 }
@@ -115,8 +119,8 @@ body {
 	resize: none;
 	padding: 12px;
 	border-radius: 3px;
-	background-color: $input-background--light;
-	border: 1px solid $primary-border--light;
+	background-color: var(--input-background--light);
+	border: 1px solid var(--primary-border--light);
 }
 
 .textInput,
@@ -126,22 +130,22 @@ body {
 }
 
 .textOutput {
-	background-color: $disabled-background--light;
-	border-color: $disabled-border--light;
-	color: $disabled-foreground--light;
+	background-color: var(--disabled-background--light);
+	border-color: var(--disabled-border--light);
+	color: var(--disabled-foreground--light);
 	outline: none;
 }
 
 .copyButton {
 	all: unset;
-	color: $link-foreground--light;
+	color: var(--link-foreground--light);
 	font-size: inherit;
 	font-weight: inherit;
 	text-decoration: underline;
 	cursor: pointer;
 
 	&:hover {
-		// CSS brought to you by a backend dev
+		/* CSS brought to you by a backend dev */
 		filter: brightness(85%);
 	}
 }
@@ -153,7 +157,7 @@ body {
 .previewWrapper {
 	min-height: 35px;
 
-	img {
+	& img {
 		height: 30px;
 	}
 }
@@ -175,7 +179,7 @@ body {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: rgba(black, 0.3);
+	background: rgba(0, 0, 0, 0.3);
 	padding: 20px;
 
 	display: flex;
@@ -191,17 +195,17 @@ body {
 	margin-bottom: auto;
 	padding: 20px;
 	border-radius: 3px;
-	background: $primary-background--light;
+	background: var(--primary-background--light);
 }
 
 .advancedOptionListItem {
 	display: flex;
 	flex-direction: row;
-	list-decoration: none;
+	list-style: none;
 	padding: 0;
 	margin-top: 12px;
 
-	.advancedOptionInput {
+	& .advancedOptionInput {
 		flex-basis: 44%;
 		margin: 0;
 		margin-right: 4%;
@@ -244,35 +248,35 @@ body {
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
 	body {
-		background-color: $primary-background--dark;
-		color: $primary-foreground--dark;
+		background-color: var(--primary-background--dark);
+		color: var(--primary-foreground--dark);
 	}
 
 	.pageHeader {
-		.pageSubtitle {
-			color: $secondary-foreground--dark;
+		& .pageSubtitle {
+			color: var(--secondary-foreground--dark);
 		}
 	}
 
 	.advancedOptionsContainer {
-		background-color: $primary-background--dark;
+		background-color: var(--primary-background--dark);
 	}
 
 	.advancedOptionInput,
 	.textInput {
-		background-color: $input-background--dark;
-		border-color: $primary-border--dark;
-		color: $primary-foreground--dark;
+		background-color: var(--input-background--dark);
+		border-color: var(--primary-border--dark);
+		color: var(--primary-foreground--dark);
 	}
 
 	.textOutput {
-		background-color: $disabled-background--dark;
-		border-color: $disabled-border--dark;
-		color: $disabled-foreground--dark;
+		background-color: var(--disabled-background--dark);
+		border-color: var(--disabled-border--dark);
+		color: var(--disabled-foreground--dark);
 	}
 
 	.advancedOptionsButton,
 	.copyButton {
-		color: $link-foreground--dark;
+		color: var(--link-foreground--dark);
 	}
 }
